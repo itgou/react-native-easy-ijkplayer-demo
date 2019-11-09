@@ -1,3 +1,5 @@
 rootProject.name = 'reactNativeEasyIijkplayerDemo'
+include ':react-native-easy-ijkplayer'
+project(':react-native-easy-ijkplayer').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-easy-ijkplayer/android')
 
 include ':app'

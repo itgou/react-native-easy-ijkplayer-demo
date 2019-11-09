@@ -6,44 +6,112 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, {Component} from 'react'
+import {Platform, StyleSheet, Text, View, Dimensions, Button} from 'react-native'
+import IJKPlayerView from "react-native-easy-ijkplayer"
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const {width, height} = Dimensions.get('window')
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
+export default class App extends Component {
+    state={
+        showIndicator:true
+    }
+    _play = () => {
+        this.RNTIJKPlayerRef.play()
+    }
+
+    _pause = () => {
+        this.RNTIJKPlayerRef.pause()
+    }
+
+    _stop = () => {
+        this.RNTIJKPlayerRef.stop()
+    }
+
+    _seekTo =  () => {
+        this.RNTIJKPlayerRef.seekTo(60)
+    }
+    _getDuration =  () => {
+        this.RNTIJKPlayerRef.getDuration((err, duration) => {
+            console.log(err)
+            console.log(duration)
+        })
+    }
+
+    _getSize = () => {
+        this.RNTIJKPlayerRef.getSize((err, size) => {
+            console.log(err)
+            console.log(size)
+        })
+    }
+    _onPrepared = (event) => {
+        this.setState({showIndicator:false})
+    }
+    _onLoadProgressUpdate = ({nativeEvent: {loadProgress}}) => {
+    }
+
+    _onProgressUpdate = ( progress) => {
+        console.log('progress in app',progress)
+    }
+
+    _onInfo = (info) => {
+    }
+
+    _onError = (error) => {
+    }
+
+    _onComplete = () => {
+    }
+
+    render() {
+        const {showIndicator}= this.state
+        return (
+            <>
+                <IJKPlayerView
+                    ref={(ref) => this.RNTIJKPlayerRef = ref}
+                    options={{
+//                         url: "http://192.168.101.109:8089/2.mp4",
+                        url:"http://img.elleshop.com.cn/media/product/14994134515891.mp4",
+                        // url={"http://192.168.2.225:8089/lalala.mp4"}
+                        // url: "http://img.elleshop.com.cn/media/product/14994134515891.mp4",
+                        autoPlay: 1,
+                    }}
+                    showIndicator={showIndicator}
+                    onComplete={this._onComplete}
+                    onPrepared={this._onPrepared}
+                    onError={this._onError}
+                    onInfo={this._onInfo}
+                    onProgressUpdate={this._onProgressUpdate}
+                    onLoadProgressUpdate={this._onLoadProgressUpdate} // only support IOS
+                />
+                <Button
+                    onPress={this._play}
+                    title={"start"}
+                />
+                <Button
+                    onPress={this._pause}
+                    title={"pause"}
+                />
+                <Button
+                    onPress={this._stop}
+                    title={"stop"}
+                />
+                <Button
+                    onPress={this._seekTo}
+                    title={"seek"}
+                />
+                <Button
+                    onPress={this._getDuration}
+                    title={"get Duration"}
+                />
+                <Button
+                    onPress={this._getSize}
+                    title={"get Size"}
+                />
+            </>
+        )
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+
+
